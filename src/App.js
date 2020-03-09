@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import {LyricsContext} from "./LyricsContext";
+import ArtistSelector from "./ArtistSelector";
+import Lyrics from "./Lyrics";
+import SongList from "./SongList";
+import localData from "./songsByArtists.json";
 
-function App() {
+const App = () => {
+  const [artist, setArtist] = useState(null);
+  const [song, setSong] = useState(null);
+  const songs = localData?.[artist] || [];
+  const handleChange = evt => {
+    setArtist(evt.target.value);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <LyricsContext.Provider value={{artist, song}}>
+      <div className="lyrics-demo">
+        <h1>Lyrics Demo</h1>
+        <header>
+          <ArtistSelector
+            artists={Object.keys(localData)}
+            onChange={handleChange}
+          />
+          <SongList songs={songs} onClick={setSong}/>
+        </header>
+        <Lyrics/>
+      </div>
+    </LyricsContext.Provider>
   );
-}
+};
 
 export default App;
